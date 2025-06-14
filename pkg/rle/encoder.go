@@ -30,12 +30,12 @@ func (r *RLECompressor) Compress(data []byte) ([]byte, error) {
 	if len(data) == 0 {
 		return []byte{}, nil
 	}
-	
+
 	var compressed bytes.Buffer
-	
+
 	currentByte := data[0]
 	count := 1
-	
+
 	for i := 1; i < len(data); i++ {
 		if data[i] == currentByte && count < 255 {
 			count++
@@ -43,17 +43,17 @@ func (r *RLECompressor) Compress(data []byte) ([]byte, error) {
 			// 現在の文字とカウントを出力
 			compressed.WriteByte(currentByte)
 			compressed.WriteByte(byte(count))
-			
+
 			// 次の文字に移行
 			currentByte = data[i]
 			count = 1
 		}
 	}
-	
+
 	// 最後の文字とカウントを出力
 	compressed.WriteByte(currentByte)
 	compressed.WriteByte(byte(count))
-	
+
 	return compressed.Bytes(), nil
 }
 
@@ -62,27 +62,27 @@ func (r *RLECompressor) Decompress(data []byte) ([]byte, error) {
 	if len(data)%2 != 0 {
 		return nil, fmt.Errorf("RLE: 圧縮データのサイズが不正です（奇数バイト）")
 	}
-	
+
 	var decompressed bytes.Buffer
-	
+
 	for i := 0; i < len(data); i += 2 {
 		if i+1 >= len(data) {
 			return nil, fmt.Errorf("RLE: データが不完全です")
 		}
-		
+
 		char := data[i]
 		count := int(data[i+1])
-		
+
 		if count == 0 {
 			return nil, fmt.Errorf("RLE: カウントが0です")
 		}
-		
+
 		// 指定された回数だけ文字を繰り返し
 		for j := 0; j < count; j++ {
 			decompressed.WriteByte(char)
 		}
 	}
-	
+
 	return decompressed.Bytes(), nil
 }
 
@@ -92,13 +92,13 @@ func AnalyzeData(data []byte) {
 		fmt.Println("データが空です")
 		return
 	}
-	
+
 	// 連続する文字の長さを分析
 	runs := make(map[int]int) // 連続長 -> 出現回数
 	currentChar := data[0]
 	currentLength := 1
 	totalRuns := 0
-	
+
 	for i := 1; i < len(data); i++ {
 		if data[i] == currentChar {
 			currentLength++
@@ -111,11 +111,11 @@ func AnalyzeData(data []byte) {
 	}
 	runs[currentLength]++
 	totalRuns++
-	
+
 	fmt.Printf("=== RLE分析結果 ===\n")
 	fmt.Printf("総ラン数: %d\n", totalRuns)
 	fmt.Printf("平均ラン長: %.2f\n", float64(len(data))/float64(totalRuns))
-	
+
 	// 長いランの統計
 	longRuns := 0
 	for length, count := range runs {
@@ -123,16 +123,16 @@ func AnalyzeData(data []byte) {
 			longRuns += count
 		}
 	}
-	
-	fmt.Printf("長いラン (4文字以上): %d (%.1f%%)\n", 
+
+	fmt.Printf("長いラン (4文字以上): %d (%.1f%%)\n",
 		longRuns, float64(longRuns)/float64(totalRuns)*100)
-	
+
 	// RLE圧縮効果の予測
 	originalSize := len(data)
 	estimatedCompressed := totalRuns * 2 // 各ランは文字+カウントの2バイト
-	
+
 	fmt.Printf("予想圧縮サイズ: %d bytes\n", estimatedCompressed)
-	fmt.Printf("予想圧縮率: %.2f%%\n", 
+	fmt.Printf("予想圧縮率: %.2f%%\n",
 		float64(estimatedCompressed)/float64(originalSize)*100)
 }
 
@@ -142,13 +142,13 @@ func (r *RLECompressor) CompressWithStats(data []byte) ([]byte, common.Compressi
 	if err != nil {
 		return nil, common.CompressionStats{}, err
 	}
-	
+
 	stats := common.CompressionStats{
 		OriginalSize:   int64(len(data)),
 		CompressedSize: int64(len(compressed)),
 		Algorithm:      r.Name(),
 	}
 	stats.CalculateRatio()
-	
+
 	return compressed, stats, nil
 }
