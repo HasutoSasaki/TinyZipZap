@@ -1,5 +1,3 @@
-// Package rle implements Run-Length Encoding compression algorithm.
-// RLE（ランレングス符号化）は、同じ文字が連続して現れる場合に
 // 「文字 + 出現回数」の形式で圧縮する最も基本的な圧縮アルゴリズムです。
 package rle
 
@@ -10,23 +8,23 @@ import (
 	"github.com/sasakihasuto/tinyzipzap/pkg/common"
 )
 
-// RLECompressor はRun-Length Encoding圧縮を実装します
-type RLECompressor struct{}
+// Compressor はRun-Length Encoding圧縮を実装します
+type Compressor struct{}
 
-// NewRLECompressor は新しいRLECompressorを作成します
-func NewRLECompressor() *RLECompressor {
-	return &RLECompressor{}
+// NewCompressor は新しいCompressorを作成します
+func NewCompressor() *Compressor {
+	return &Compressor{}
 }
 
 // Name はアルゴリズム名を返します
-func (r *RLECompressor) Name() string {
+func (r *Compressor) Name() string {
 	return "Run-Length Encoding (RLE)"
 }
 
 // Compress はRLEアルゴリズムでデータを圧縮します
 // 形式: [文字][カウント][文字][カウント]...
 // カウントは1-255の範囲で、255を超える場合は分割します
-func (r *RLECompressor) Compress(data []byte) ([]byte, error) {
+func (r *Compressor) Compress(data []byte) ([]byte, error) {
 	if len(data) == 0 {
 		return []byte{}, nil
 	}
@@ -58,7 +56,7 @@ func (r *RLECompressor) Compress(data []byte) ([]byte, error) {
 }
 
 // Decompress はRLE圧縮されたデータを展開します
-func (r *RLECompressor) Decompress(data []byte) ([]byte, error) {
+func (r *Compressor) Decompress(data []byte) ([]byte, error) {
 	if len(data)%2 != 0 {
 		return nil, fmt.Errorf("RLE: 圧縮データのサイズが不正です（奇数バイト）")
 	}
@@ -86,8 +84,8 @@ func (r *RLECompressor) Decompress(data []byte) ([]byte, error) {
 	return decompressed.Bytes(), nil
 }
 
-// AnalyzeData はRLE圧縮に適したデータかどうかを分析します
-func AnalyzeData(data []byte) {
+// Analyze はRLE圧縮に適したデータかどうかを分析します
+func Analyze(data []byte) {
 	if len(data) == 0 {
 		fmt.Println("データが空です")
 		return
@@ -137,7 +135,7 @@ func AnalyzeData(data []byte) {
 }
 
 // CompressWithStats は圧縮と統計計算を同時に行います
-func (r *RLECompressor) CompressWithStats(data []byte) ([]byte, common.CompressionStats, error) {
+func (r *Compressor) CompressWithStats(data []byte) ([]byte, common.CompressionStats, error) {
 	compressed, err := r.Compress(data)
 	if err != nil {
 		return nil, common.CompressionStats{}, err
