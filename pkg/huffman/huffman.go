@@ -81,9 +81,15 @@ func buildHuffmanTree(freq map[byte]int) *Node {
 	h := &NodeHeap{}
 	heap.Init(h)
 
-	// 各文字をノードとしてヒープに追加
-	for char, f := range freq {
-		heap.Push(h, &Node{Char: char, Freq: f})
+	// 各文字をソートしてからノードとしてヒープに追加（安定性を保証）
+	var chars []byte
+	for char := range freq {
+		chars = append(chars, char)
+	}
+	sort.Slice(chars, func(i, j int) bool { return chars[i] < chars[j] })
+
+	for _, char := range chars {
+		heap.Push(h, &Node{Char: char, Freq: freq[char]})
 	}
 
 	// Huffman木を構築
