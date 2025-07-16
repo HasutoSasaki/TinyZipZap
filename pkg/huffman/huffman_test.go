@@ -5,16 +5,16 @@ import (
 	"testing"
 )
 
-func TestHuffmanCompressor_Name(t *testing.T) {
-	compressor := NewHuffmanCompressor()
+func TestCompressor_Name(t *testing.T) {
+	compressor := NewCompressor()
 	expected := "Huffman Coding"
 	if compressor.Name() != expected {
 		t.Errorf("Expected %s, got %s", expected, compressor.Name())
 	}
 }
 
-func TestHuffmanCompressor_EmptyData(t *testing.T) {
-	compressor := NewHuffmanCompressor()
+func TestCompressor_EmptyData(t *testing.T) {
+	compressor := NewCompressor()
 
 	// 空のデータをテスト
 	compressed, err := compressor.Compress([]byte{})
@@ -32,8 +32,8 @@ func TestHuffmanCompressor_EmptyData(t *testing.T) {
 	}
 }
 
-func TestHuffmanCompressor_SingleCharacter(t *testing.T) {
-	compressor := NewHuffmanCompressor()
+func TestCompressor_SingleCharacter(t *testing.T) {
+	compressor := NewCompressor()
 	original := []byte("aaaa")
 
 	compressed, err := compressor.Compress(original)
@@ -51,8 +51,8 @@ func TestHuffmanCompressor_SingleCharacter(t *testing.T) {
 	}
 }
 
-func TestHuffmanCompressor_BasicText(t *testing.T) {
-	compressor := NewHuffmanCompressor()
+func TestCompressor_BasicText(t *testing.T) {
+	compressor := NewCompressor()
 	testCases := [][]byte{
 		[]byte("hello world"),
 		[]byte("aaabbbccc"),
@@ -79,8 +79,8 @@ func TestHuffmanCompressor_BasicText(t *testing.T) {
 	}
 }
 
-func TestHuffmanCompressor_LargeData(t *testing.T) {
-	compressor := NewHuffmanCompressor()
+func TestCompressor_LargeData(t *testing.T) {
+	compressor := NewCompressor()
 
 	// 大きなデータを作成
 	var original []byte
@@ -103,8 +103,8 @@ func TestHuffmanCompressor_LargeData(t *testing.T) {
 	}
 }
 
-func BenchmarkHuffmanCompress(b *testing.B) {
-	compressor := NewHuffmanCompressor()
+func BenchmarkCompress(b *testing.B) {
+	compressor := NewCompressor()
 	data := []byte("The quick brown fox jumps over the lazy dog. " +
 		"This is a sample text for benchmarking compression algorithms.")
 
@@ -117,8 +117,8 @@ func BenchmarkHuffmanCompress(b *testing.B) {
 	}
 }
 
-func BenchmarkHuffmanDecompress(b *testing.B) {
-	compressor := NewHuffmanCompressor()
+func BenchmarkDecompress(b *testing.B) {
+	compressor := NewCompressor()
 	data := []byte("The quick brown fox jumps over the lazy dog. " +
 		"This is a sample text for benchmarking compression algorithms.")
 

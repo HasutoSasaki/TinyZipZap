@@ -10,16 +10,16 @@ import (
 	"github.com/sasakihasuto/tinyzipzap/pkg/common"
 )
 
-// HuffmanCompressor はHuffman Coding圧縮を実装します
-type HuffmanCompressor struct{}
+// Compressor はHuffman Coding圧縮を実装します
+type Compressor struct{}
 
-// NewHuffmanCompressor は新しいHuffmanCompressorを作成します
-func NewHuffmanCompressor() *HuffmanCompressor {
-	return &HuffmanCompressor{}
+// NewCompressor は新しいCompressorを作成します
+func NewCompressor() *Compressor {
+	return &Compressor{}
 }
 
 // Name はアルゴリズム名を返します
-func (h *HuffmanCompressor) Name() string {
+func (h *Compressor) Name() string {
 	return "Huffman Coding"
 }
 
@@ -64,8 +64,8 @@ func buildFrequencyTable(data []byte) map[byte]int {
 	return freq
 }
 
-// buildHuffmanTree はHuffman木を構築します
-func buildHuffmanTree(freq map[byte]int) *Node {
+// buildTree はHuffman木を構築します
+func buildTree(freq map[byte]int) *Node {
 	if len(freq) == 0 {
 		return nil
 	}
@@ -138,7 +138,7 @@ func buildCodeTable(root *Node) map[byte]string {
 }
 
 // Compress はHuffmanアルゴリズムでデータを圧縮します
-func (h *HuffmanCompressor) Compress(data []byte) ([]byte, error) {
+func (h *Compressor) Compress(data []byte) ([]byte, error) {
 	if len(data) == 0 {
 		return []byte{}, nil
 	}
@@ -147,7 +147,7 @@ func (h *HuffmanCompressor) Compress(data []byte) ([]byte, error) {
 	freq := buildFrequencyTable(data)
 
 	// Huffman木を構築
-	root := buildHuffmanTree(freq)
+	root := buildTree(freq)
 	if root == nil {
 		return nil, fmt.Errorf("failed to build Huffman tree")
 	}
@@ -220,7 +220,7 @@ func (h *HuffmanCompressor) Compress(data []byte) ([]byte, error) {
 }
 
 // Decompress はHuffman圧縮されたデータを展開します
-func (h *HuffmanCompressor) Decompress(data []byte) ([]byte, error) {
+func (h *Compressor) Decompress(data []byte) ([]byte, error) {
 	if len(data) == 0 {
 		return []byte{}, nil
 	}
@@ -249,7 +249,7 @@ func (h *HuffmanCompressor) Decompress(data []byte) ([]byte, error) {
 	}
 
 	// Huffman木を再構築
-	root := buildHuffmanTree(freq)
+	root := buildTree(freq)
 	if root == nil {
 		return nil, fmt.Errorf("failed to rebuild Huffman tree")
 	}
@@ -308,4 +308,4 @@ func (h *HuffmanCompressor) Decompress(data []byte) ([]byte, error) {
 	return result, nil
 }
 
-var _ common.Compressor = (*HuffmanCompressor)(nil)
+var _ common.Compressor = (*Compressor)(nil)
